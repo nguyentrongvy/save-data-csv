@@ -5,7 +5,7 @@ const { dataCSV } = require('../constants');
 exports.saveDataCSV = async () => {
     const url = '';
     let result = await axios.get(url);
-
+    result = dataCSV;
     let promises = [];
     for (const cus of result) {
         const customer = new Customer();
