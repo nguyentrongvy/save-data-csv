@@ -1,4 +1,7 @@
 const reader = require('xlsx');
+const axios = require('axios');
+const fs = require('fs');
+
 const Post = require('../models/Post');
 
 exports.readFile = async () => {
@@ -65,5 +68,47 @@ exports.writeFileCSV = () => {
     const workSheet = reader.utils.json_to_sheet(json);
     reader.utils.book_append_sheet(workBook, workSheet, `test2`);
     let exportFileName = `test2.csv`
+
     return reader.writeFile(workBook, exportFileName);
 };
+
+
+exports.savePost = async () => {
+    return axios.post('https://jsonplaceholder.typicode.com/todos', {
+        "userId": 10,
+        // "id": 101,
+        "title": "at nam consequatur ea labore ea harum111",
+        "body": "vy test"
+    });
+};
+
+exports.readFileTxt = () => {
+    return readFile();
+};
+
+exports.writeFileTxt = () => {
+    return writeFileTxt();
+};
+
+
+function readFile() {
+    return new Promise((resolve, reject) => {
+        fs.readFile('./test.txt', 'utf8', (err, data) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(data);
+          });
+    });
+}
+
+function writeFileTxt() {
+    return new Promise((resolve, reject) => {
+        fs.writeFile("./test2.txt", "Hey there!", function(err) {
+            if(err) {
+                reject(err);
+            }
+            resolve("The file was saved!");
+        }); 
+    });
+}

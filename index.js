@@ -3,16 +3,23 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const axios = require('axios');
 const reader = require('xlsx');
+const bodyParser = require('body-parser')
 
 const app = express();
 const Category = require('./models/Category');
 const Post = require('./models/Post');
 
-const { readFile, writeFileCSV } = require('./services/post.service');
+const { readFile, writeFileCSV, readFileTxt, savePost, writeFileTxt } = require('./services/post.service');
 
 app.use(cors({
     origin: '*',
 }));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 app.get('/test', async (req, res) => {
     try {
@@ -22,13 +29,6 @@ app.get('/test', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-    // const category = new Category();
-    // console.log(category);
-    // category.title = 'abc1';
-    // category.note = 'test1';
-    // const cate = await category.save();
-    // const list = await Category.find();
-    // console.log(list);
     res.send('hello');
 });
 
@@ -48,6 +48,37 @@ app.get('/write-file', async (req, res) => {
         await writeFileCSV();
 
         res.status(200).json({});
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+app.get('/read-file-txt', async (req, res) => {
+    try {
+        const result = await readFileTxt();
+        console.log(result);
+        res.send('ok')
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+app.get('/write-file-txt', async (req, res) => {
+    try {
+        await writeFileTxt();
+        res.send('ok')
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+app.post('/test-post', async (req, res) => {
+    try {
+        const data  = req.body;
+        await savePost();
+        res.status(200).json({
+            data: [],
+        });
     } catch (error) {
         console.log(error);
     }
