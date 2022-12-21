@@ -1,24 +1,32 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const { saveDataCSV } = require('./services/csv.service');
 
 const app = express();
-
 
 app.use(cors({
     origin: '*',
 }));
 
-// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.get('/read-file-csv', async (req, res) => {
+    try {
+        await saveDataCSV();
+        res.status(200).json({
+            status: 'success',
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
 
-app.get('/init', (req, res) => {
-    res.send('ok')
+app.get('/ping', (req, res) => {
+    res.send('pong')
 })
 
-// parse application/json
 app.use(bodyParser.json())
 
 app.listen(4000, () => {
